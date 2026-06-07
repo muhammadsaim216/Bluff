@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety net - default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global secure helper primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // User Profile Validation Helper
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['id', 'name', 'avatar', 'chips', 'xp', 'equippedCardBack', 'equippedTableFelt', 'unlockedItems'])
+          && (data.keys().size() == 8 || (data.keys().size() == 9 && data.keys().hasAll(['claimedSignUpBonus'])))
+          && data.id == request.auth.uid
+          && data.name is string && data.name.size() <= 100
+          && data.avatar is string && data.avatar.size() <= 800
+          && data.chips is int
+          && data.xp is int
+          && data.equippedCardBack is string
+          && data.equippedTableFelt is string
+          && data.unlockedItems is list
+          && (!data.keys().hasAll(['claimedSignUpBonus']) || data.claimedSignUpBonus is bool);
+    }
+
+    // --- Users Profiles Collection ---
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+
+    // --- Global Leaderboard Entries ---
+    match /leaderboards/{playerId} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn() && request.auth.uid == playerId;
+    }
+
+    // --- Lobby Game Tables ---
+    match /tables/{tableId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // --- Blacklist Dossiers ---
+    match /blacklist_dossiers/{dossierId} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn() && resource.data.contributorId == request.auth.uid;
+    }
+
+    // --- Strategy vault briefings ---
+    match /strategy_topics/{topicId} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+    }
+
+    // --- Market items ---
+    match /market_items/{itemId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // --- Friends list ---
+    match /friends/{friendId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile, balance, XP, and equipped custom styles",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique user identifier matching Firebase Auth UID" },
+        "name": { "type": "string", "description": "Display nickname of the player" },
+        "avatar": { "type": "string", "description": "URL link to avatar profile photo" },
+        "chips": { "type": "integer", "description": "Total chips currency in player's wallet" },
+        "xp": { "type": "integer", "description": "Total experience points gained from game rounds" },
+        "equippedCardBack": { "type": "string", "description": "ID of currently equipped card skins on tables" },
+        "equippedTableFelt": { "type": "string", "description": "ID of currently equipped velvet table backgrounds" },
+        "unlockedItems": { "type": "array", "description": "Array of strings tracking purchased cosmetics" },
+        "claimedSignUpBonus": { "type": "boolean", "description": "Tracks if player already claimed welcome bonus" }
+      },
+      "required": ["id", "name", "avatar", "chips", "xp", "equippedCardBack", "equippedTableFelt", "unlockedItems"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Leaderboard score information card for active deceivers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique player identifier" },
+        "name": { "type": "string", "description": "Game name" },
+        "avatar": { "type": "string", "description": "Profile picture link" },
+        "rank": { "type": "string", "description": "Display tournament league tier" },
+        "chips": { "type": "integer", "description": "Current active bank size" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "bluffRate": { "type": "string" },
+            "chipsWon": { "type": "string" },
+            "winRate": { "type": "string" },
+            "totalPot": { "type": "string" },
+            "callAcc": { "type": "string" },
+            "weeklyGain": { "type": "string" }
+          }
+        }
+      },
+      "required": ["id", "name", "rank", "chips"]
+    },
+    "LobbyTable": {
+      "title": "LobbyTable",
+      "description": "Information card mapping an active game room lobby",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "stakes": { "type": "string" },
+        "playerCount": { "type": "integer" },
+        "maxPlayers": { "type": "integer" },
+        "minBuyIn": { "type": "integer" },
+        "avatars": { "type": "array" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "name", "stakes", "playerCount", "maxPlayers", "minBuyIn", "avatars", "status"]
+    },
+    "BlacklistDossier": {
+      "title": "BlacklistDossier",
+      "description": "Classified dossier profile tracking targets",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "codename": { "type": "string" },
+        "fullName": { "type": "string" },
+        "status": { "type": "string" },
+        "bountyValue": { "type": "string" },
+        "avatar": { "type": "string" },
+        "psychologicalProfile": { "type": "string" },
+        "physicalTells": { "type": "string" },
+        "recommendedCounterStrategy": { "type": "string" },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "bluffFrequency": { "type": "integer" },
+            "tiltFactor: intel": { "type": "integer" },
+            "patienceLevel": { "type": "integer" },
+            "callingThreshold": { "type": "integer" }
+          }
+        },
+        "isCommunityContribution": { "type": "boolean" },
+        "contributorName": { "type": "string" }
+      },
+      "required": ["id", "codename", "fullName", "status", "bountyValue", "avatar", "psychologicalProfile", "physicalTells", "recommendedCounterStrategy", "metrics"]
+    },
+    "StrategyTopic": {
+      "title": "StrategyTopic",
+      "description": "Confidential guide or cheat sheet published in the community strategy vault",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "icon": { "type": "string" },
+        "contentMarkdown": { "type": "string" },
+        "author": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "subtitle", "icon", "contentMarkdown"]
+    },
+    "MarketItem": {
+      "title": "MarketItem",
+      "description": "Customizable cards skin or velvet table felt background",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["card-back", "table-felt"] },
+        "price": { "type": "integer" },
+        "description": { "type": "string" },
+        "colorClass": { "type": "string" },
+        "borderPreview": { "type": "string" },
+        "bgPreview": { "type": "string" }
+      },
+      "required": ["id", "name", "type", "price", "description", "colorClass", "borderPreview", "bgPreview"]
+    },
+    "Friend": {
+      "title": "Friend",
+      "description": "Syndicate associate from elite circles",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "avatar": { "type": "string" },
+        "rank": { "type": "string" },
+        "chips": { "type": "integer" },
+        "online": { "type": "boolean" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "bluffRate": { "type": "string" },
+            "chipsWon": { "type": "string" },
+            "winRate": { "type": "string" },
+            "totalPot": { "type": "string" },
+            "callAcc": { "type": "string" },
+            "weeklyGain": { "type": "string" }
+          }
+        }
+      },
+      "required": ["id", "name", "rank", "chips"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores private user profiles, skin ownership, and game state metrics"
+    },
+    "/leaderboards/{playerId}": {
+      "schema": "LeaderboardEntry",
+      "description": "Global leaderboard ranking ledger of high stake players"
+    },
+    "/tables/{tableId}": {
+      "schema": "LobbyTable",
+      "description": "Active multiplayer lobby rooms available to join"
+    },
+    "/blacklist_dossiers/{dossierId}": {
+      "schema": "BlacklistDossier",
+      "description": "Dossiers directory including default targets and user contributions"
+    },
+    "/strategy_topics/{topicId}": {
+      "schema": "StrategyTopic",
+      "description": "Detailed strategic briefings available to elite players"
+    },
+    "/market_items/{itemId}": {
+      "schema": "MarketItem",
+      "description": "Store cosmetic items list"
+    },
+    "/friends/{friendId}": {
+      "schema": "Friend",
+      "description": "Connected associates profiles tracking live interactions"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "BLUFF - Velvet Shadow Underground",
+  "description": "High stakes, higher pressure. Can you lie your way to the top in this thrilling underground card game of deception?",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
